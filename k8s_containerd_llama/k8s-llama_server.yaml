@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: testggml
+  namespace: default
+  annotations:
+    module.wasm.image/variant: compat-smart
+spec:
+  hostNetwork: true
+  containers:
+    - name: chat
+      image: ghcr.io/captainvincent/runwasi-demo:llama-api-server
+      command: ["/app.wasm", "-p", "llama-2-chat"]
+      stdin: true
+      tty: true
+      env:
+        - name: WASMEDGE_PLUGIN_PATH
+          value: "/opt/containerd/lib"
+        - name: WASMEDGE_WASINN_PRELOAD
+          value: "default:GGML:CPU:/resource/llama-2-7b-chat.Q5_K_M.gguf"
+      volumeMounts:
+        - name: plugins
+          mountPath: "/opt/containerd/lib"
+        - name: model
+          mountPath: "/resource"
+  volumes:
+    - name: plugins
+      hostPath:
+        path: "/home/vincent/.wasmedge/plugin"
+    - name: model
+      hostPath:
+        path: "/home/vincent/workspace/_k8s-demo/wasmedge-containers-examples"
