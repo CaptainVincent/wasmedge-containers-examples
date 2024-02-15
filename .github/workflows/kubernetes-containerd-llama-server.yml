@@ -12,11 +12,11 @@ on:
         required: true
         default: 'info'
   push:
-    branches: [ main ]
+    branches: [ k8s-llama-server ]
     paths-ignore:
       - '**/README.md'
   pull_request:
-    branches: [ main ]
+    branches: [ k8s-llama-server ]
     paths-ignore:
       - '**/README.md'
   schedule:
